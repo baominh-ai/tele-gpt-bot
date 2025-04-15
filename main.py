@@ -7,9 +7,11 @@ from telegram import Update, ReplyKeyboardMarkup, KeyboardButton
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
 
 # === CẤU HÌNH ===
-TELEGRAM_TOKEN = "YOUR_TELEGRAM_BOT_TOKEN"
-OPENAI_API_KEY = "YOUR_OPENAI_API_KEY"
-SHEET_URL = "YOUR_GOOGLE_SHEET_URL"
+import os
+
+TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+SHEET_URL = os.getenv("SHEET_URL")
 
 # === KẾT NỐI GOOGLE SHEET ===
 scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
