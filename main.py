@@ -1,21 +1,20 @@
 import logging
 import gspread
 import openai
+import os
 from datetime import datetime
 from oauth2client.service_account import ServiceAccountCredentials
 from telegram import Update, ReplyKeyboardMarkup, KeyboardButton
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
 
-# === CẤU HÌNH ===
-import os
-
+# === CẤU HÌNH TỪ BIẾN MÔI TRƯỜNG ===
 TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 SHEET_URL = os.getenv("SHEET_URL")
 
 # === KẾT NỐI GOOGLE SHEET ===
 scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-creds = ServiceAccountCredentials.from_json_keyfile_name("credentials.json", scope)
+creds = ServiceAccountCredentials.from_json_keyfile_name("google-credentials.json", scope)
 client = gspread.authorize(creds)
 sheet = client.open_by_url(SHEET_URL)
 
