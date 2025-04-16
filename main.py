@@ -8,28 +8,20 @@ from oauth2client.service_account import ServiceAccountCredentials
 from telegram import Update, ReplyKeyboardMarkup, KeyboardButton
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
 
-# === CẤU HÌNH TỪ BIẾN MÔI TRƯỜNG ===
 TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 SHEET_URL = os.getenv("SHEET_URL")
 GOOGLE_CREDENTIALS_JSON = os.getenv("GOOGLE_CREDENTIALS_JSON")
 
-# === KẾT NỐI GOOGLE SHEET ===
 scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
 creds_dict = json.loads(GOOGLE_CREDENTIALS_JSON)
-if "private_key" in creds_dict and "\\n" in creds_dict["private_key"]:
-    creds_dict["private_key"] = creds_dict["private_key"].replace("\\n", "\n")
 creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
 client = gspread.authorize(creds)
 sheet = client.open_by_url(SHEET_URL)
 
-# === OPENAI ===
 openai.api_key = OPENAI_API_KEY
-
-# === LƯU TRẠNG THÁI NGƯỜI DÙNG ===
 user_state = {}
 
-# === CHATGPT ===
 def ask_chatgpt(prompt):
     try:
         response = openai.ChatCompletion.create(
@@ -40,7 +32,6 @@ def ask_chatgpt(prompt):
     except Exception as e:
         return f"⚠️ Lỗi kết nối GPT: {e}"
 
-# === /START ===
 def start(update: Update, context: CallbackContext):
     keyboard = [
         [KeyboardButton("📝 ghi")],
@@ -51,7 +42,6 @@ def start(update: Update, context: CallbackContext):
     reply_markup = ReplyKeyboardMarkup(keyboard, one_time_keyboard=True, resize_keyboard=True)
     update.message.reply_text("👋 Chào bạn! Đây là trợ lý ghi chú + AI. Hãy chọn lệnh bên dưới:", reply_markup=reply_markup)
 
-# === HANDLE MESSAGE ===
 def handle_message(update: Update, context: CallbackContext):
     user_id = update.effective_user.id
     text = update.message.text.strip()
@@ -118,7 +108,6 @@ def handle_message(update: Update, context: CallbackContext):
 
     update.message.reply_text("⚠️ Lệnh không hợp lệ. Hãy dùng đúng nút hoặc cú pháp:")
 
-# === MAIN ===
 def main():
     logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
     updater = Updater(TELEGRAM_TOKEN, use_context=True)
